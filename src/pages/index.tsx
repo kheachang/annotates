@@ -44,6 +44,7 @@ export default function Home() {
       document.removeEventListener('mouseup', handleHighlightedText);
     }
   }, []);
+
   (async () => {
     console.log(selectedText, ':', await decideSearchType(selectedText));
   })();
