@@ -36,3 +36,12 @@ export async function decideSearchType(topic, choiceNames = ['neural', 'keyword'
     const useKeyword = response.trim().toLowerCase().startsWith(choiceNames[1].toLowerCase());
     return useKeyword ? 'keyword' : 'neural';
 }
+
+export async function searchText(selectedText) {
+    if (!selectedText) return;
+    try {
+        console.log("searching for: ", selectedText)
+    } catch (error) {
+        console.error("Search failed: ", error);
+    }
+}

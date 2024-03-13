@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Exa from 'exa-js';
 import { api } from "~/utils/api";
 import { env } from "../env.js";
-import { decideSearchType } from "~/utils/helpers.jsx";
+import { decideSearchType, searchText } from "~/utils/helpers.jsx";
 
 export default function Home() {
   const [text, setText] = useState('');
@@ -45,9 +45,11 @@ export default function Home() {
     }
   }, []);
 
-  (async () => {
-    console.log(selectedText, ':', await decideSearchType(selectedText));
-  })();
+  // (async () => {
+  //   console.log(selectedText, ':', await decideSearchType(selectedText));
+  // })();
+
+  searchText(selectedText);
 
   return (
     <>
