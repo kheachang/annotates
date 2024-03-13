@@ -1,11 +1,17 @@
+require('dotenv').config();
 import { useEffect, useState } from "react";
-
+import Exa from 'exa-js';
 import { api } from "~/utils/api";
+import { env } from "../env.js";
+import { decideSearchType } from "~/utils/helpers.jsx";
 
 export default function Home() {
   const [text, setText] = useState('');
   const [selectedText, setSelectedText] = useState('');
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+  const exaApiKey = env.NEXT_PUBLIC_EXA_API_KEY;
+  const exa = new Exa(exaApiKey);
+  
 
   useEffect(() => {
     async function fetchText() {
@@ -38,6 +44,9 @@ export default function Home() {
       document.removeEventListener('mouseup', handleHighlightedText);
     }
   }, []);
+  (async () => {
+    console.log(selectedText, ':', await decideSearchType(selectedText));
+  })();
 
   return (
     <>
