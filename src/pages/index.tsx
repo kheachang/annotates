@@ -1,6 +1,5 @@
 require('dotenv').config();
 import { useEffect, useState } from "react";
-import Exa from 'exa-js';
 import { api } from "~/utils/api";
 import { env } from "../env.js";
 import { decideSearchType, searchText } from "~/utils/helpers.jsx";
@@ -9,9 +8,7 @@ export default function Home() {
   const [text, setText] = useState('');
   const [selectedText, setSelectedText] = useState('');
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
-  const exaApiKey = env.NEXT_PUBLIC_EXA_API_KEY;
-  const exa = new Exa(exaApiKey);
-  
+  const [additionalInfo, setAdditionalInfo] = useState([]);
 
   useEffect(() => {
     async function fetchText() {
@@ -45,20 +42,48 @@ export default function Home() {
     }
   }, []);
 
-  // (async () => {
-  //   console.log(selectedText, ':', await decideSearchType(selectedText));
-  // })();
-
-  searchText(selectedText);
+  useEffect(() => {
+    const result = async () => {
+      try {
+        const res = await searchText(selectedText);
+        if (res && res.results) {
+          // const titles = res.results.map(r => r.title)
+          setAdditionalInfo(res.results)
+        } else {
+          setAdditionalInfo([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch results: ", error);
+      }
+    };
+    result();
+  }, [selectedText]);
 
   return (
     <>
-      <h1>Highlight text for more info: {selectedText}</h1>
       <div id="pop-up">
-        <p>{selectedText}</p>
+        <h1>Search results for: {selectedText}</h1>
+        <div>
+          {additionalInfo.length > 0 ? (
+            <ul>
+              {additionalInfo.map((item, index) => (
+                <li key={index}>
+                  <h3>{item.title}</h3>
+                  <p>URL: <a href={item.url} target="_blank" rel="noopener noreferrer">{item.url}</a></p>
+                  <p>Published Date: {item.publishedDate || 'N/A'}</p>
+                  <p>Author: {item.author || 'Unknown'}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No results found.</p>
+          )}
+        </div>
+        <br></br>
+        <p></p>
       </div>
       <br></br>
-      <p>{text}</p> {/* Render the text file content */}
+      <p>{text}</p>
     </>
   );
 }
